@@ -2,17 +2,20 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import random
 
+### A class that creates a list of nodes, edges, and edge weights to be visualized as a graph ###
 class networkVisualization:
     def __init__(self):
         self.edges = []
         self.nodes = []
         self.edge_labels = []
 
+    ### This function clears a graph of all data ###
     def Clear(self):
         self.edges = []
         self.nodes = []
         self.edge_labels = []
 
+    ### This function retrieves a letter of the alphabet not yet used as a node ###
     def GetUnusedLetter(self):
         from string import ascii_uppercase as alphabet
         for letter in alphabet:
@@ -26,6 +29,8 @@ class networkVisualization:
                 if not self.nodes.__contains__(combination):
                     return combination
 
+    ### This function adds a new edge to the list of edges. If the nodes specified for the edge don't exist, it creates them. ###
+    ### If no weight is specified, it creates a random weight between one and ten.                                            ###
     def AddEdge(self, a, b, distance=None):
         # set a random distance if none is provided
         if distance == None:
@@ -43,6 +48,7 @@ class networkVisualization:
             self.edges.append([a, b])
             self.edge_labels.append(distance)
 
+    ### This function takes an edge as input and outputs true if it exists or false if it doesn't. ###
     def EdgeExists(self, a, b):
         if self.edges.__contains__([a, b]):
             return True
@@ -50,6 +56,8 @@ class networkVisualization:
             return True
         return False
 
+    ### This function takes in a string as an argument and creates a new node from that string. ###
+    ### If no string is given, it creates one using an unused letter of the alphabet.           ###
     def AddNode(self, a=None):
         if a == None:
             a = self.GetUnusedLetter()
@@ -60,12 +68,14 @@ class networkVisualization:
             return a
         return None
 
+    ### This function prints out a comprehensive list of each node and each edge along with its weight. ###
     def PrintAll(self):
         print("Nodes: ", self.nodes)
         print("Edges: ")
         for i in range(0, len(self.edges)):
             print(self.edges[i][0], "-", self.edge_labels[i], "-> ", self.edges[i][1])
 
+    ### This function takes an edge as an argument and returns the weight of that edge. ###
     def GetEdgeDistance(self, a, b):
         if self.edges.__contains__([a, b]):
             index = self.edges.index([a, b])
@@ -75,6 +85,7 @@ class networkVisualization:
             return self.edge_labels[index]
         return None
 
+    ### This function takes a node as an argument and returns all nodes connected by an edge to that node along with their weights. ###
     def GetConnectedNodes(self, a):
         # return none if node doesnt exist
         if not self.nodes.__contains__(a):
@@ -97,6 +108,7 @@ class networkVisualization:
                         #print("Node ", node, " is connected to node ", a, ". Distance = ", dist)
         return listOfNodes, listOfNodeDistances
 
+    ### This function takes in a number of nodes and edges and creates a randomized graph from those nodes and edges. ###
     def GenerateRandomGraph(self, numberOfNodes, numberOfEdges):
         # check for impossible node/edge config
         if numberOfEdges > (numberOfNodes * (numberOfNodes - 1)):
@@ -129,6 +141,7 @@ class networkVisualization:
             listOfOtherNodes.remove(node)
             self.AddEdge(node, random.choice(listOfOtherNodes))
 
+    ### This function is used by the random graph function to generate an edge from existing nodes that doesn't exist yet. ###
     def GenerateUniqueEdge(self):
         validNodeList = self.nodes.copy()
 
@@ -161,6 +174,7 @@ class networkVisualization:
         self.AddEdge(node1, node2)
         return [node1, node2]
 
+    ### This function removes the specified node from the list of nodes, along with all edges connected to that node. ###
     def RemoveNode(self, a):
         if not self.nodes.__contains__(a):
             return None
@@ -176,6 +190,7 @@ class networkVisualization:
         # remove the node itself
         self.nodes.remove(a)
 
+    ### This funciton removes an edge from the list of edges, along with its weight. ###
     def RemoveEdge(self, a, b):
         if not self.EdgeExists(a, b):
             return None
@@ -183,10 +198,12 @@ class networkVisualization:
         self.edges.pop(edge_index)
         self.edge_labels.pop(edge_index)
 
+    ### This function chooses and removes a random node. Used to simulate network failure. ###
     def RemoveRandomNode(self):
         nodeToRemove = random.choice(self.nodes)
         self.RemoveNode(nodeToRemove)
 
+    ### This function creates a visualization of the graph. ###
     def DrawGraph(self):
         G = nx.Graph()
         G.add_edges_from(self.edges)
