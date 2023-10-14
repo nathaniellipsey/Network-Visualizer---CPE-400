@@ -1,1 +1,3 @@
-
+README
+----
+This project was done for my CPE 400 class. It is a python script that generates a graph depicting nodes in a network and simulates how the network behaves when a node is disconnected.
